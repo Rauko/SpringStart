@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 //@Repository
@@ -25,5 +26,26 @@ public class UserService {
 
     public User getUserById(Long id){
         return UserService.users.stream().filter(u -> u.getId() == id).findFirst().orElse(new User(0L, "user0"));
+    }
+
+    public List<User> getAllUsers(){
+        return UserService.users;
+    }
+
+
+    public User addUser(User user){
+        UserService.users.add(user);
+        return UserService.users.get(UserService.users.size() - 1);
+    }
+
+    public void deleteUser(Long id){
+        UserService.users.removeIf(u -> u.getId() == id);
+    }
+
+    public List<User> editUserName(Long id, String name){
+        UserService.users = UserService.users.stream()
+                .map(u -> u.getId() == id ? new User(u.getId(), name) : u)
+                .collect(Collectors.toList());
+        return UserService.users.stream().filter(u -> u.getId() == id).collect(Collectors.toList());
     }
 }
